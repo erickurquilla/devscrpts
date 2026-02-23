@@ -239,6 +239,43 @@ def plot_pcolormesh_with_contour_and_scatter_one_cbar(
     plt.show()
     plt.close(fig)
 
+
+def plot_pcolormesh_with_contour_and_scatter_one_cbar_with_bh_shadow(
+    x1, y1, z1, min_cb1, max_cb1, cbar_label1, colormap1,
+    x_label, y_label, title, filename,
+    x_scatter1, y_scatter1, z_scatter1, cos_theta_bh_shadow, phi_bh_shadow, costheta_lowlimit, costheta_highlimit):
+
+    fig, ax = plt.subplots(figsize=(12, 8))
+
+    # Plot pcolormesh for both, but only use colorbar from c1
+    c1 = ax.pcolormesh(x1, y1, z1, shading='auto', cmap=colormap1, vmin=min_cb1, vmax=max_cb1)
+
+    ax.scatter(x_scatter1, y_scatter1, c=z_scatter1, cmap=colormap1, vmin=min_cb1, vmax=max_cb1, s=100, edgecolor='black')
+
+    # Plot BH shadow boundary
+    ax.plot(phi_bh_shadow, cos_theta_bh_shadow, color='black', linestyle='solid', linewidth=2)
+    
+    # Plot settings
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
+    ax.set_title(title)
+
+    ax.set_xlim(0 - 0.3, 2 * np.pi + 0.3)
+    ax.set_ylim(costheta_lowlimit, costheta_highlimit)
+
+    # Add only one color bar
+    cbar1 = fig.colorbar(c1, ax=ax, label=cbar_label1, location='right')
+    cbar1.ax.yaxis.set_minor_locator(AutoMinorLocator())
+
+    leg = ax.legend(framealpha=0.0, ncol=1, fontsize=15)
+    apply_custom_settings(ax, leg, False)
+
+    ax.set_aspect('auto', 'box')
+
+    fig.savefig(filename, format='png', bbox_inches='tight')
+    plt.show()
+    plt.close(fig)    
+
 def plot_colored_lines(x, y, time_s, xlabel, ylabel, cbarlabel, filename=None, xlog= False, ylog=False, ylowerlimit=None, yupperlimit=None):
 
     fig, ax = plt.subplots(figsize=(10, 6))
