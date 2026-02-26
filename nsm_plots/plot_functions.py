@@ -315,3 +315,58 @@ def plot_colored_lines(x, y, time_s, xlabel, ylabel, cbarlabel, filename=None, x
         plt.savefig(filename, bbox_inches='tight')
     plt.show()
     plt.close(fig)
+
+import cv2
+import glob
+import os
+
+def create_video_from_images(image_files, output_filename, frame_rate=4):
+
+    if not image_files:
+        raise ValueError(f"No images found")
+
+    # Read the first image to get the dimensions
+    frame = cv2.imread(image_files[0])
+    height, width, layers = frame.shape
+
+    # Scale up the resolution
+    scale_factor = 2  # Increase resolution by a factor of 2
+    new_width = width * scale_factor
+    new_height = height * scale_factor
+
+    # Build list of resized RGB frames (same for GIF and optional MP4)
+    frames_rgb = []
+    for image_file in image_files:
+        frame = cv2.imread(image_file)
+        resized = cv2.resize(frame, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+        frames_rgb.append(cv2.cvtColor(resized, cv2.COLOR_BGR2RGB))
+
+    # 1) Always write GIF (Cursor and VS Code can open it; no codec needed)
+    duration_sec = 1.0 / frame_rate  # seconds per frame
+    try:
+        import imageio
+        imageio.mimsave(output_filename + '.gif', frames_rgb, duration=duration_sec, loop=0)
+        print(f"Saved GIF (open in Cursor): {output_filename + '.gif'}")
+    except ImportError:
+        from PIL import Image
+        # Pillow fallback: save as animated GIF
+        pil_frames = [Image.fromarray(f) for f in frames_rgb]
+        pil_frames[0].save(
+            output_filename + '.gif', save_all=True, append_images=pil_frames[1:],
+            duration=int(1000 * duration_sec), loop=0
+        )
+        print(f"Saved GIF (open in Cursor): {output_filename + '.gif'}")
+
+    # 2) Optionally write H.264 MP4 if imageio-ffmpeg is available
+    try:
+        import imageio
+        _writer = imageio.get_writer(
+            output_filename + '.mp4', format='FFMPEG', codec='libx264',
+            fps=frame_rate, quality=8, pixelformat='yuv420p'
+        )
+        for fr in frames_rgb:
+            _writer.append_data(fr)
+        _writer.close()
+        print(f"Saved MP4: {output_filename + '.mp4'}")
+    except Exception as e:
+        print(f"MP4 skipped (install imageio-ffmpeg for MP4): {e}")
