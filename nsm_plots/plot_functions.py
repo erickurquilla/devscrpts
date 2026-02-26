@@ -209,7 +209,7 @@ def plot_pcolormesh_with_contour_and_scatter(
 def plot_pcolormesh_with_contour_and_scatter_one_cbar(
     x1, y1, z1, min_cb1, max_cb1, cbar_label1, colormap1,
     x_label, y_label, title, filename,
-    x_scatter1, y_scatter1, z_scatter1):
+    x_scatter1, y_scatter1, z_scatter1, doshow=True, dosave=True):
 
     fig, ax = plt.subplots(figsize=(12, 8))
 
@@ -235,15 +235,17 @@ def plot_pcolormesh_with_contour_and_scatter_one_cbar(
 
     ax.set_aspect('auto', 'box')
 
-    fig.savefig(filename, format='png', bbox_inches='tight')
-    plt.show()
-    plt.close(fig)
+    if dosave:
+        fig.savefig(filename, format='png', bbox_inches='tight')
+    if doshow:
+        plt.show()
 
+    plt.close(fig)
 
 def plot_pcolormesh_with_contour_and_scatter_one_cbar_with_bh_shadow(
     x1, y1, z1, min_cb1, max_cb1, cbar_label1, colormap1,
     x_label, y_label, title, filename,
-    x_scatter1, y_scatter1, z_scatter1, cos_theta_bh_shadow, phi_bh_shadow, costheta_lowlimit, costheta_highlimit):
+    x_scatter1, y_scatter1, z_scatter1, cos_theta_bh_shadow, phi_bh_shadow, costheta_lowlimit, costheta_highlimit, doshow=True, dosave=True):
 
     fig, ax = plt.subplots(figsize=(12, 8))
 
@@ -272,8 +274,11 @@ def plot_pcolormesh_with_contour_and_scatter_one_cbar_with_bh_shadow(
 
     ax.set_aspect('auto', 'box')
 
-    fig.savefig(filename, format='png', bbox_inches='tight')
-    plt.show()
+    if dosave:
+        fig.savefig(filename, format='png', bbox_inches='tight')
+    if doshow:
+        plt.show()
+
     plt.close(fig)    
 
 def plot_colored_lines(x, y, time_s, xlabel, ylabel, cbarlabel, filename=None, xlog= False, ylog=False, ylowerlimit=None, yupperlimit=None):
