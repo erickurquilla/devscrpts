@@ -73,63 +73,50 @@ tolerance = 1.0e-4
 unique_momentum = fac.get_unique_momentum(momentum, tolerance)
 print(f'unique_momentum.shape = {unique_momentum.shape}')
 
-Nee_all     = particles_dict_this_cell['N00_Re']
-Nuu_all     = particles_dict_this_cell['N11_Re']
-Ntt_all     = particles_dict_this_cell['N22_Re']
-Neebar_all  = particles_dict_this_cell['N00_Rebar']
-Nuubar_all  = particles_dict_this_cell['N11_Rebar']
-Nttbar_all = particles_dict_this_cell['N22_Rebar']
+Fluxee_all = particles_dict_this_cell['N00_Re'][:, np.newaxis] * momentum
+ee_unique_fluxes, ee_unique_fluxes_mag = fac.compute_unique_fluxes(momentum, Fluxee_all, unique_momentum)
 
-Fluxee_all    = Nee_all   [:, np.newaxis] * momentum
-Fluxuu_all    = Nuu_all   [:, np.newaxis] * momentum
-Fluxtt_all    = Ntt_all   [:, np.newaxis] * momentum
-Fluxeebar_all = Neebar_all[:, np.newaxis] * momentum
-Fluxuubar_all = Nuubar_all[:, np.newaxis] * momentum
-Fluxnttbar_all = Nttbar_all[:, np.newaxis] * momentum
+p_unit_x = np.real(ee_unique_fluxes[:,0]) / ee_unique_fluxes_mag
+p_unit_y = np.real(ee_unique_fluxes[:,1]) / ee_unique_fluxes_mag
+p_unit_z = np.real(ee_unique_fluxes[:,2]) / ee_unique_fluxes_mag
 
-ee_unique_fluxes, ee_unique_fluxes_mag       = fac.compute_unique_fluxes(momentum, Fluxee_all, unique_momentum)
-uu_unique_fluxes, uu_unique_fluxes_mag       = fac.compute_unique_fluxes(momentum, Fluxuu_all, unique_momentum)
-tt_unique_fluxes, tt_unique_fluxes_mag       = fac.compute_unique_fluxes(momentum, Fluxtt_all, unique_momentum)
-eebar_unique_fluxes, eebar_unique_fluxes_mag = fac.compute_unique_fluxes(momentum, Fluxeebar_all, unique_momentum)
-uubar_unique_fluxes, uubar_unique_fluxes_mag = fac.compute_unique_fluxes(momentum, Fluxuubar_all, unique_momentum)
-ttbar_unique_fluxes, ttbar_unique_fluxes_mag = fac.compute_unique_fluxes(momentum, Fluxnttbar_all, unique_momentum)
+def sum_over_energies(quantity):
+    quantity_vector = quantity[:, np.newaxis] * momentum
+    quantity_unique_fluxes, quantity_unique_fluxes_mag = fac.compute_unique_fluxes(momentum, quantity_vector, unique_momentum)
+    return quantity_unique_fluxes_mag
 
-p_unit_x = ee_unique_fluxes[:,0] / ee_unique_fluxes_mag
-p_unit_y = ee_unique_fluxes[:,1] / ee_unique_fluxes_mag
-p_unit_z = ee_unique_fluxes[:,2] / ee_unique_fluxes_mag
+uu_unique_fluxes_mag = sum_over_energies(particles_dict_this_cell['N11_Re'])
+tt_unique_fluxes_mag = sum_over_energies(particles_dict_this_cell['N22_Re'])
+eebar_unique_fluxes_mag = sum_over_energies(particles_dict_this_cell['N00_Rebar'])
+uubar_unique_fluxes_mag = sum_over_energies(particles_dict_this_cell['N11_Rebar'])
+ttbar_unique_fluxes_mag = sum_over_energies(particles_dict_this_cell['N22_Rebar'])
 
-energy = np.array(particles_dict_this_cell['pupt'])[0]
-print('energy = ', energy)
+average_energy_ee = np.sum(particles_dict_this_cell['pupt']*particles_dict_this_cell['N00_Re']) / np.sum(particles_dict_this_cell['N00_Re'])
+average_energy_uu = np.sum(particles_dict_this_cell['pupt']*particles_dict_this_cell['N11_Re']) / np.sum(particles_dict_this_cell['N11_Re'])
+average_energy_tt = np.sum(particles_dict_this_cell['pupt']*particles_dict_this_cell['N22_Re']) / np.sum(particles_dict_this_cell['N22_Re'])
+average_energy_eebar = np.sum(particles_dict_this_cell['pupt']*particles_dict_this_cell['N00_Rebar']) / np.sum(particles_dict_this_cell['N00_Rebar'])
+average_energy_uubar = np.sum(particles_dict_this_cell['pupt']*particles_dict_this_cell['N11_Rebar']) / np.sum(particles_dict_this_cell['N11_Rebar'])
+average_energy_ttbar = np.sum(particles_dict_this_cell['pupt']*particles_dict_this_cell['N22_Rebar']) / np.sum(particles_dict_this_cell['N22_Rebar'])
+
+print('average_energy_ee = ', average_energy_ee)
+print('average_energy_uu = ', average_energy_uu)
+print('average_energy_tt = ', average_energy_tt)
+print('average_energy_eebar = ', average_energy_eebar)
+print('average_energy_uubar = ', average_energy_uubar)
+print('average_energy_ttbar = ', average_energy_ttbar)
+
+energy = ( average_energy_ee + average_energy_eebar + average_energy_uu ) / 3.0
+print('average_energy = ', energy)
 
 pupt = p_unit_x * 0.0 + energy
 pupx = p_unit_x * energy
 pupy = p_unit_y * energy
 pupz = p_unit_z * energy
 
-N_01_Re = np.zeros_like(ee_unique_fluxes_mag)
-N_01_Im = np.zeros_like(ee_unique_fluxes_mag)
-N_02_Re = np.zeros_like(ee_unique_fluxes_mag)
-N_02_Im = np.zeros_like(ee_unique_fluxes_mag)
-N_12_Re = np.zeros_like(ee_unique_fluxes_mag)
-N_12_Im = np.zeros_like(ee_unique_fluxes_mag)
-
-N_01_Rebar = np.zeros_like(ee_unique_fluxes_mag)
-N_01_Imbar = np.zeros_like(ee_unique_fluxes_mag)
-N_02_Rebar = np.zeros_like(ee_unique_fluxes_mag)
-N_02_Imbar = np.zeros_like(ee_unique_fluxes_mag)
-N_12_Rebar = np.zeros_like(ee_unique_fluxes_mag)
-N_12_Imbar = np.zeros_like(ee_unique_fluxes_mag)
-
-time = np.zeros_like(ee_unique_fluxes_mag)
-TrHN = np.zeros_like(ee_unique_fluxes_mag)
-Vphase = np.zeros_like(ee_unique_fluxes_mag)
-pos_x = np.zeros_like(ee_unique_fluxes_mag)
-pos_y = np.zeros_like(ee_unique_fluxes_mag)
-pos_z = np.zeros_like(ee_unique_fluxes_mag)
-x = np.zeros_like(ee_unique_fluxes_mag)
-y = np.zeros_like(ee_unique_fluxes_mag)
-z = np.zeros_like(ee_unique_fluxes_mag)
-
+total_Vphase = np.sum(particles_dict_this_cell['Vphase'])
+Vphase_single_particle = total_Vphase / len(ee_unique_fluxes_mag)
+print('Vphase_single_particle = ', Vphase_single_particle)
+Vphase = np.full_like(ee_unique_fluxes_mag, Vphase_single_particle)
 
 output_filename = f'cell_{cell_index_i}_{cell_index_j}_{cell_index_k}_Esummed.h5'
 with h5py.File(output_filename, 'w') as f:
@@ -141,28 +128,28 @@ with h5py.File(output_filename, 'w') as f:
     f.create_dataset('N11_Rebar', data=uubar_unique_fluxes_mag)
     f.create_dataset('N22_Rebar', data=ttbar_unique_fluxes_mag)
 
-    f.create_dataset('N01_Re', data=N_01_Re)
-    f.create_dataset('N01_Im', data=N_01_Im)
-    f.create_dataset('N02_Re', data=N_02_Re)
-    f.create_dataset('N02_Im', data=N_02_Im)
-    f.create_dataset('N12_Re', data=N_12_Re)
-    f.create_dataset('N12_Im', data=N_12_Im)
-    f.create_dataset('N01_Rebar', data=N_01_Rebar)
-    f.create_dataset('N01_Imbar', data=N_01_Imbar)
-    f.create_dataset('N02_Rebar', data=N_02_Rebar)
-    f.create_dataset('N02_Imbar', data=N_02_Imbar)
-    f.create_dataset('N12_Rebar', data=N_12_Rebar)
-    f.create_dataset('N12_Imbar', data=N_12_Imbar)
+    f.create_dataset('N01_Re', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('N01_Im', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('N02_Re', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('N02_Im', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('N12_Re', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('N12_Im', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('N01_Rebar', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('N01_Imbar', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('N02_Rebar', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('N02_Imbar', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('N12_Rebar', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('N12_Imbar', data=np.zeros_like(ee_unique_fluxes_mag))
 
-    f.create_dataset('time', data=time)
-    f.create_dataset('TrHN', data=TrHN)
+    f.create_dataset('time', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('TrHN', data=np.zeros_like(ee_unique_fluxes_mag))
     f.create_dataset('Vphase', data=Vphase)
-    f.create_dataset('pos_x', data=pos_x)
-    f.create_dataset('pos_y', data=pos_y)
-    f.create_dataset('pos_z', data=pos_z)
-    f.create_dataset('x', data=x)
-    f.create_dataset('y', data=y)
-    f.create_dataset('z', data=z)
+    f.create_dataset('pos_x', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('pos_y', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('pos_z', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('x', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('y', data=np.zeros_like(ee_unique_fluxes_mag))
+    f.create_dataset('z', data=np.zeros_like(ee_unique_fluxes_mag))
 
     f.create_dataset('pupt', data=pupt)
     f.create_dataset('pupx', data=pupx)
