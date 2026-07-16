@@ -60,8 +60,8 @@ import re
 # Define the old and new basis vectors
 
 basis_old = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
-basis_new = np.array([[1.0/np.sqrt(2), 1.0/np.sqrt(2), 0.0], [-1.0/np.sqrt(2), 1.0/np.sqrt(2), 0.0], [0.0, 0.0, 1.0]]) # dotted purple
-basis_new = np.array([[1.0/np.sqrt(2), 0.0, 1.0/np.sqrt(2)], [0.0, 1.0, 0.0], [-1.0/np.sqrt(2), 0.0, 1.0/np.sqrt(2)]]) # dotted red
+basis_new = np.array([[1.0/np.sqrt(2), 1.0/np.sqrt(2), 0.0], [-1.0/np.sqrt(2), 1.0/np.sqrt(2), 0.0], [0.0, 0.0, 1.0]]) # dotted red
+basis_new = np.array([[1.0/np.sqrt(2), 0.0, 1.0/np.sqrt(2)], [0.0, 1.0, 0.0], [-1.0/np.sqrt(2), 0.0, 1.0/np.sqrt(2)]]) # dotted purple
 
 # # rotate the basis vectors around the y axis by theta_rad radians
 # theta_rad = 0.890621565207065
