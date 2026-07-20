@@ -7,7 +7,10 @@ from matplotlib.ticker import AutoLocator, AutoMinorLocator, LogLocator
 # Font settings
 mpl.rcParams['font.size'] = 22
 mpl.rcParams['font.family'] = 'serif'
-mpl.rc('text', usetex=False)
+try:
+    mpl.rc('text', usetex=True)
+except Exception as e:
+    mpl.rc('text', usetex=False)
 
 # Tick settings
 mpl.rcParams['xtick.major.width'] = 2
