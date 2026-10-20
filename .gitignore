@@ -6,6 +6,7 @@ seq_ins_notebooks/plots
 nsm_global_plots_notebooks/plots
 gw170817_paper_plots/*.h5
 gw170817_paper_plots/plots
+emu_methods_paper_2027/plots
 */*.h5
 */*.csv
 */*.hdf5
