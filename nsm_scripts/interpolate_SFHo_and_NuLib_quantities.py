@@ -49,8 +49,8 @@ Usage:
 # --------------------------------------------------------------------------------
 
 matter_file_path = 'rho_Ye_T.hdf5'
-nu_lib_table_dir = '/mnt/scratch/erick/jobs_emu/tables/NuLib_SFHo.h5'
-eos_table_dir = '/mnt/scratch/erick/jobs_emu/tables/LS220.h5'
+nu_lib_table_dir = "/pscratch/sd/b/bigqke/bigqke_scratch/tables/NuLib_SFHo.h5"
+eos_table_dir = "/pscratch/sd/b/bigqke/bigqke_scratch/tables/LS220.h5"
 
 # --------------------------------------------------------------------------------
 
@@ -297,9 +297,9 @@ Nz = np.array(rho_ye_T_h5py['/ncellsz'])
 print(f'Nx = {Nx}, Ny = {Ny}, Nz = {Nz}')
 
 # cell size
-dx = ( np.array(rho_ye_T_h5py['/xmax_cm']) - np.array(rho_ye_T_h5py['/xmin_cm']) ) / np.array(rho_ye_T_h5py['/ncellsx']) # cm
-dy = ( np.array(rho_ye_T_h5py['/ymax_cm']) - np.array(rho_ye_T_h5py['/ymin_cm']) ) / np.array(rho_ye_T_h5py['/ncellsy']) # cm
-dz = ( np.array(rho_ye_T_h5py['/zmax_cm']) - np.array(rho_ye_T_h5py['/zmin_cm']) ) / np.array(rho_ye_T_h5py['/ncellsz']) # cm
+dx = ( np.array(rho_ye_T_h5py['/xmax']) - np.array(rho_ye_T_h5py['/xmin']) ) / np.array(rho_ye_T_h5py['/ncellsx']) # cm
+dy = ( np.array(rho_ye_T_h5py['/ymax']) - np.array(rho_ye_T_h5py['/ymin']) ) / np.array(rho_ye_T_h5py['/ncellsy']) # cm
+dz = ( np.array(rho_ye_T_h5py['/zmax']) - np.array(rho_ye_T_h5py['/zmin']) ) / np.array(rho_ye_T_h5py['/ncellsz']) # cm
 print(f'dx = {dx} cm, dy = {dy} cm, dz = {dz} cm')
 
 # cell faces
