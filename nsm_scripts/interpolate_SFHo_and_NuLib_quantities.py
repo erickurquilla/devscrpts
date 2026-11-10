@@ -52,6 +52,10 @@ matter_file_path = 'rho_Ye_T.hdf5'
 nu_lib_table_dir = "/pscratch/sd/b/bigqke/bigqke_scratch/tables/NuLib_SFHo.h5"
 eos_table_dir = "/pscratch/sd/b/bigqke/bigqke_scratch/tables/LS220.h5"
 
+# Tables in erick's home directory in cassowary
+nu_lib_table_dir = "/home/erick/tables/NuLib_SFHo.h5"
+eos_table_dir = "/home/erick/tables/LS220.h5"
+
 # --------------------------------------------------------------------------------
 
 import numpy as np
